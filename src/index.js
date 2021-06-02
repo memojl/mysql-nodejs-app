@@ -31,8 +31,12 @@ app.use((req, res, next)=>{
 });
 
 //routes
-app.use(require('./routes/RutasWeb'));
+app.use(require('./routes'));
+app.use(require('./routes/auth'));
+app.use('/links',require('./routes/links'));
+
 //public
+app.use(express.static(path.join(__dirname + "/public")));
 
 //Server
 app.listen(app.get('port'), () => {
