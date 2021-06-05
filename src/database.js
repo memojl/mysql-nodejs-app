@@ -1,6 +1,6 @@
 const mysql = require('mysql');
 const { promisify }= require('util');
-const { database } = require('./keys');
+const { database } = require('./config');
 const pool = mysql.createPool(database);
 
 pool.getConnection((err, connection) => {
@@ -18,7 +18,6 @@ pool.getConnection((err, connection) => {
 
   if (connection) connection.release();
   console.log(`La DB esta conectada`.green); 
-
   return;
 });
 
