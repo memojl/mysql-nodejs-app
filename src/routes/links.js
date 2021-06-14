@@ -3,6 +3,12 @@ const router = express.Router();
 
 const mysqlConnection = require('../database');
 
+//LISTAR
+router.get('/', async (req, res)=>{
+    const links = await mysqlConnection.query('SELECT * FROM links');
+    res.render('links/list', { links });
+});
+
 //AGREGAR
 router.get('/add', (req, res)=>{
     res.render('links/add');
@@ -21,13 +27,6 @@ router.post('/add', async (req, res)=>{
     res.redirect('/links');
 });
 
-//LISTAR
-router.get('/', async (req, res)=>{
-    const links = await mysqlConnection.query('SELECT * FROM links');
-    res.render('links/list', { links });
-});
-
-
 //EDITAR
 router.get('/edit/:id', async (req, res) => {
     const { id } = req.params;
@@ -36,4 +35,13 @@ router.get('/edit/:id', async (req, res) => {
     res.render('links/edit', {link: links[0]});
 });
 
+
+
+
+//BORRAR
+router.get('/delete/:id', async (req,res)=>{
+    const {id} = req.params;//console.log(id);
+    await mysqlConnection.query('DELETE FROM links WHERE id = ?', [id]);
+    res.redirect('/links');
+});
 module.exports = router;
