@@ -23,7 +23,7 @@ router.post('/add', async (req, res)=>{
     }
     //console.log(newLink);
     await mysqlConnection.query('INSERT INTO links set ?', [newLink]);
-    //req.flash('success', 'Link Saved Successfully');
+    req.flash('success', 'Link Guardado Correctamente');
     res.redirect('/links');
 });
 
@@ -31,17 +31,29 @@ router.post('/add', async (req, res)=>{
 router.get('/edit/:id', async (req, res) => {
     const { id } = req.params;
     const links = await mysqlConnection.query('SELECT * FROM links WHERE id = ?', [id]);
-    console.log(links);
+    console.log(links[0]);
     res.render('links/edit', {link: links[0]});
 });
 
-
-
+router.post('/edit/:id', async(req, res)=>{
+    const { id } = req.params;
+    const {title,url,description} = req.body;
+    const newLink = {
+        title,
+        url,
+        description
+    }
+    //console.log(newLink);
+    await mysqlConnection.query('UPDATE links SET ? WHERE id = ?', [newLink, id]);
+    req.flash('success', 'Link Editado Correctamente');
+    res.redirect('/links');
+});
 
 //BORRAR
 router.get('/delete/:id', async (req,res)=>{
     const {id} = req.params;//console.log(id);
     await mysqlConnection.query('DELETE FROM links WHERE id = ?', [id]);
+    req.flash('success', 'Link Borrado Correctamente');
     res.redirect('/links');
 });
 module.exports = router;
