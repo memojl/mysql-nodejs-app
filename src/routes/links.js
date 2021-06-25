@@ -2,15 +2,16 @@ const express = require('express');
 const router = express.Router();
 
 const mysqlConnection = require('../database');
+const { isLoggedIn } = require('../lib/auth');
 
 //LISTAR
-router.get('/', async (req, res)=>{
+router.get('/', isLoggedIn, async (req, res)=>{
     const links = await mysqlConnection.query('SELECT * FROM links');
     res.render('links/list', { links });
 });
 
 //AGREGAR
-router.get('/add', (req, res)=>{
+router.get('/add', isLoggedIn, (req, res)=>{
     res.render('links/add');
 });
 
@@ -28,7 +29,7 @@ router.post('/add', async (req, res)=>{
 });
 
 //EDITAR
-router.get('/edit/:id', async (req, res) => {
+router.get('/edit/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
     const links = await mysqlConnection.query('SELECT * FROM links WHERE id = ?', [id]);
     console.log(links[0]);
@@ -50,7 +51,7 @@ router.post('/edit/:id', async(req, res)=>{
 });
 
 //BORRAR
-router.get('/delete/:id', async (req,res)=>{
+router.get('/delete/:id', isLoggedIn, async (req,res)=>{
     const {id} = req.params;//console.log(id);
     await mysqlConnection.query('DELETE FROM links WHERE id = ?', [id]);
     req.flash('success', 'Link Borrado Correctamente');
