@@ -6,7 +6,7 @@ const { isLoggedIn } = require('../lib/auth');
 
 //LISTAR
 router.get('/', isLoggedIn, async (req, res)=>{
-    const links = await mysqlConnection.query('SELECT * FROM links');
+    const links = await mysqlConnection.query('SELECT * FROM links WHERE user_id = ?',[req.user.id]);
     res.render('links/list', { links });
 });
 
@@ -20,7 +20,8 @@ router.post('/add', async (req, res)=>{
     const newLink = {
         title,
         url,
-        description
+        description,
+        user_id: req.user.id
     }
     //console.log(newLink);
     await mysqlConnection.query('INSERT INTO links set ?', [newLink]);
